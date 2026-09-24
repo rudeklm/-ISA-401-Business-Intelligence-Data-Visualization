@@ -1,5 +1,4 @@
-library(shiny)
-library(bslib)
+# ISA 401 Midwest Airbnb Chat: ask questions, get SQL, a table, or a chart back
 library(querychat)
 
 con = DBI::dbConnect(RSQLite::SQLite(), "data/midwest_airbnb.db")
@@ -9,7 +8,7 @@ client = ellmer::chat_openai(
   params = ellmer::params(reasoning_effort = "none")
 )
 
-qc = querychat(
+qc = querychat::querychat(
   con, "listings",
   client             = client,
   tools              = c("filter", "query", "visualize"),
@@ -18,25 +17,4 @@ qc = querychat(
   extra_instructions = "data/extra_instructions.md"
 )
 
-ui = page_sidebar(
-  title   = "Midwest Airbnb Explorer",
-  theme   = bs_theme(primary = "#FF5A5F",
-                     base_font = font_google("Nunito")),
-  sidebar = qc$sidebar(width = 350),
-  card(card_header(textOutput("title")),
-       DT::DTOutput("table")),
-  accordion(open = TRUE,
-            accordion_panel("SQL", verbatimTextOutput("sql")),
-            accordion_panel("About", "Listings from Inside Airbnb: Chicago (2026-07-20), Columbus (2026-07-23), and Twin Cities (2026-07-21). Built by Lauren Rudek."))
-)
-
-server = function(input, output, session) {
-  vals = qc$server()
-  output$title = renderText(vals$title() %||% "All listings")
-  output$table = DT::renderDT(vals$df(),
-                              options = list(pageLength = 10))
-  output$sql   = renderText(vals$sql() %||%
-                              "SELECT * FROM listings")
-}
-
-shinyApp(ui, server)
+qc$app_obj()
