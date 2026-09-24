@@ -16,5 +16,3 @@ qc = querychat::querychat(
   data_description   = "data/data_desc.md",
   extra_instructions = "data/extra_instructions.md"
 )
-
-qc$app_obj()
