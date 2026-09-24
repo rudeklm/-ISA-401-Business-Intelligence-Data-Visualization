@@ -1,0 +1,25 @@
+---
+title: "Class9/14"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+run = readr::read_csv(
+  "https://isa401-find-your-seat.vercel.app/api/export?section=A&run=13")
+dplyr::glimpse(run)
+
+con = DBI::dbConnect(RSQLite::SQLite(),
+                     "../data/scout.db")
+DBI::dbListTables(con)
+postings = DBI::dbReadTable(con, "scout_postings")
+DBI::dbDisconnect(con)
+dplyr::glimpse(postings[, c("title", "company",
+  "location_state", "remote", "skills_json")])
+```
+

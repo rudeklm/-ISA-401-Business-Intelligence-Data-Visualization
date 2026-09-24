@@ -1,0 +1,71 @@
+---
+title: "04_r_data_structures"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+    code_folding: show
+    code_download: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Examine a job add
+```{r activity01}
+job = list(
+  title   = "Research Data Scientist, Magic Eye",
+  company = "Google",
+  salary  = list(min = 147000, max = 210000)
+)
+str(job)
+
+## 1. The company name.
+job$company
+# OR
+company = job[[2]]
+
+## 2. The maximum salary.
+job$salary$max
+#OR
+max_salary = job$salary$max
+
+## 3. The maximum salary again, using only [[ ]].
+job[["salary"]][["max"]]
+#OR
+max_salary_alt = job[[3]][[2]]
+
+## 4. The names of the elements in job.
+names(job)
+```
+
+# Subsetting
+
+## Subsetting a vector
+```{r subset_vec}
+crashes_by_day = c(2020, 2241, 2327, 2285, 2380, 1866, 1664)
+names(crashes_by_day) = c("Mon", "Tue", "Wed", "Thu",
+                          "Fri", "Sat", "Sun")
+crashes_by_day[c("Wed","Fri")] # pulling elements by their name
+crashes_by_day[c("3","5")]       
+crashes_by_day[1:5] # only works for elements in a row [doing that by their index]  
+crashes_by_day[] # returns all the elements --> no diff than crashes_by_day
+```
+# Importing data in R
+## CSV
+```{r csvs}
+oh_jobs = readr::read_csv(
+  file = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=974&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=IHLIDXUSOH&scale=left&cosd=2021-08-28&coed=2026-08-28&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Daily%2C%207-Day&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2026-09-02&revision_date=2026-09-02&nd=2020-02-01"
+)
+
+oh_jobs_baser = read.csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23ebf3fb&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=974&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=IHLIDXUSOH&scale=left&cosd=2021-08-28&coed=2026-08-28&line_color=%230073e6&link_values=false&line_style=solid&mark_type=none&mw=3&lw=3&ost=-99999&oet=99999&mma=0&fml=a&fq=Daily%2C%207-Day&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2026-09-02&revision_date=2026-09-02&nd=2020-02-01")
+
+oh_jobs_data <- read.csv("IHLIDXUSOH.csv")
+
+dplyr::glimpse(oh_jobs)
+dplyr::glimpse(oh_jobs_baser)
+```

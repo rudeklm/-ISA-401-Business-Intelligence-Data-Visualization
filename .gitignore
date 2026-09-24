@@ -3,4 +3,11 @@
 .RData
 .Ruserdata
 .Renviron
-.DS_Store
+*.DS_Store
+/GitHub Desktop.app
+data/api_key.txt
+apps/api_key (1).txt
+apps/apikey.txt
+apps/job_scout_chat 2/.DS_Store
+apps/.DS_Store
+apps/.DS_Store

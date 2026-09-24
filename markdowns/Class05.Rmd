@@ -1,0 +1,68 @@
+---
+title: "9/9"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    numbered_sections: true
+    code_folding: show
+    code_download: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r game01}
+campus = jsonlite::fromJSON("https://isa401-find-your-seat.vercel.app/campus.json")
+
+dplyr:: glimpse(campus)
+
+# finding the code for farmer
+fsb = campus[['Farmer']]
+fsb$code
+names(campus)
+campus$Farmer
+
+# finding the sections of an FSB room
+sec_floor = fsb$floors[["2"]]
+sec_floor$sections
+
+df = sec_floor$rooms
+df
+df[6,2]
+```
+
+# reading excel file
+```{r read_excel}
+
+occupation = readxl::read_excel(
+  path = "~/Desktop/business_intelligence/data/occupation.xlsx", sheet = "Table 1.4", skip = 1
+  )
+
+occupation = occupation[-c(32,33,34), ] # delete three specific rows 
+
+```
+
+# JSON Data
+```{r}
+json_url = paste0(
+  "https://data.cincinnati-oh.gov/",
+  "resource/rvmt-pkmq.json?$limit=100")
+crashes_json = jsonlite::fromJSON(json_url)
+dplyr::glimpse(
+  crashes_json[, c("crashdate", "dayofweek",
+                   "crashseverity", "age")])
+```
+## VPN activity 
+```{r game02}
+logins = readr::read_csv("https://isa401-import-heist.vercel.app/api/stage1?seat=L2-1&s=A")
+
+log = jsonlite::fromJSON("https://isa401-import-heist.vercel.app/api/stage2?key=ACCOUNT")
+
+jsonlite::fromJSON("https://isa401-import-heist.vercel.app/api/finish?code=NUMBER&seat=L2-1&s=A")
+df = log$events
+log$events$action 
+```

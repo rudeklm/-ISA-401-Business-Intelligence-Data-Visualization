@@ -1,0 +1,52 @@
+---
+title: "HW04"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    number_sections: TRUE
+    code_download: TRUE
+    code_folding: show
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# code from assignment
+```{r}
+con = DBI::dbConnect(RSQLite::SQLite(), "../data/midwest_airbnb.db")
+listings = DBI::dbReadTable(con, "listings")
+```
+
+# Q1
+```{r}
+nrow(listings)
+```
+# Q2
+```{r}
+sum(listings$city == "Columbus")
+```
+# Q3
+```{r}
+chicago <- listings[listings$city == "Chicago", ]
+chicago$name[which.max(chicago$price)]
+```
+# Q4
+```{r}
+length(unique(listings$neighbourhood[listings$city == "Chicago"]))
+```
+# Q5
+```{r}
+sum(listings$host_is_superhost == "t", na.rm = TRUE)
+```
+# Q6
+```{r}
+sum(listings$price > 1000)
+```
+
+
+

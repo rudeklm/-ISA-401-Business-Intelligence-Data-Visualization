@@ -1,0 +1,82 @@
+---
+title: "Class9/23"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Illustrating the httr2 functions
+
+```{r slide8}
+httr2::request("https://data.cincinnati-oh.gov/resource/rvmt-pkmq.json") |>
+  httr2::req_url_query("$limit" = 5) |>
+  httr2::req_perform() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+```
+# FRED Example
+
+```{r FRED}
+Sys.getenv("FRED_API_KEY")   # shows the key, so: Console only
+usethis::use_git_ignore(".Renviron")
+
+ohio_jobs =
+  httr2::request("https://api.stlouisfed.org/fred/series/observations") |>
+    httr2::req_url_query(
+    series_id = "IHLIDXUSOH",
+    api_key = Sys.getenv("FRED_API_KEY"),
+    file_type = "json"
+  ) |>
+    # nothing has been sent yet
+  httr2::req_perform() |>
+  httr2::last_response() |>
+  httr2::resp_body_string() |>
+  jsonlite::fromJSON()
+
+ 
+# we saw that the data is in observations
+ohio_df = ohio_jobs$observations
+ 
+dplyr::glimpse(ohio_jobs)
+ 
+# another approach to filter the dates would be:
+  ohio_df |>
+    # overwrite the date col and convert to date (from chr)
+    dplyr::mutate(date = lubridate::ymd(date)) |>
+    # bc it is a date, we can do logical checks on it and keep dates from sep 01, 2026
+    dplyr::filter(date >= "2026-09-01") -> ohio_df_sept_2026
+  
+httr2::request("https://data.usajobs.gov/api/search") |>
+httr2::req_url_query(Keyword = "Data Analyst", ResultsPerPage = 500) |>
+httr2::req_headers(
+  Host = "data.usajobs.gov",
+  "User-Agent" = "yourname@miamioh.edu",
+  "Authorization-Key" = Sys.getenv("USAJOBS_API_KEY")
+) |>
+httr2::req_perform() |>
+httr2::resp_body_string() |>
+jsonlite::fromJSON(flatten = TRUE)
+```
+
+```{r in class}
+# easy way to find data analyst
+nrow(jobs_small)
+table(jobs_small$department) |> sort(decreasing = T)
+
+# another way
+jobs_small |> dplyr::count(department) |> 
+  dplyr::arrange(dplyr::desc(n)) |> head(3)
+
+# another way - but harder
+jobs_small |> dplyr::filter(title == "Data Analyst")
+
+# another way - harder
+# data analyst or data analytics side by side
+index_data_analyst = jobs_small |>
+  stringr::str_detect("Data Analyst | Data Analytics")
+```
+
