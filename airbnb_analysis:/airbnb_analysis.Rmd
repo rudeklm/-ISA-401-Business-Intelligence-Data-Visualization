@@ -24,7 +24,7 @@ DBI::dbDisconnect(con)
 ## Task 1
 ```{r task 1}
 listings |> 
-  dplyr::count(host_id, sort = T) -> host_counts
+  dplyr::count(host_id, sort = TRUE) -> host_counts
 
 host_counts |> 
   dplyr::filter(n >= 10) |> 
@@ -132,6 +132,10 @@ listings |>
     median_rating = median(review_scores_rating, na.rm = TRUE)
   ) -> b1
 b1
+b1 |> 
+  dplyr::select(city, host_is_superhost, median_price) |> 
+  tidyr::pivot_wider(names_from = host_is_superhost, values_from = median_price) |> 
+  dplyr::mutate(premium = t - f)
 ```
 
 
