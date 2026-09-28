@@ -1,0 +1,70 @@
+---
+title: "Class10"
+author: "Lauren Rudek"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_download: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Robotstxt
+
+The code chunk below will show the output from the [robotstxt package]() for the ISA course bulletin available at: <https://bulletin.miamioh.edu/courses-instruction/isa/>
+
+```{r robotstxt}
+robotstxt::paths_allowed(paths = "/courses-instruction/isa/", domain = "bulletin.miamioh.edu", bot = "*")
+```
+
+# robotstxt demo
+```{r wiki}
+robotstxt::paths_allowed(paths = "/wiki/Miami_RedHawks_football", domain = "https://en.wikipedia.org/")
+```
+```{r linkedin}
+robotstxt::paths_allowed(paths = "/jobs/", domain = "https://www.linkedin.comx", bot ="*")
+```
+# 'rvest' demo: ISA Course Bulletin
+```{r rvest demo}
+isa_page_in_r = rvest::read_html("https://bulletin.miamioh.edu/courses-instruction/isa/")
+
+# extract titles
+# if all titles look the same on the page it means that they have the same tag/class which would allow you to extract them in one step
+# got the selector below by:
+## [a] highlighted the course
+## [b] right clicked and selected inspect
+## [c] found the part that was flushed containing the title
+## [d] saw that the output from the code below just got me the 24th couse so I dropped the ':nth-child(24)'
+isa_page_in_r |> 
+  rvest::html_elements(
+    "#sc_sccoursedescs > div > p.courseblocktitle > strong"
+  ) |> 
+  rvest::html_text2() -> isa_titles
+
+# course descriptions
+# css selector obtained using the selector gadget
+isa_page_in_r |>
+  rvest::html_elements(".courseblockdesc") |>
+  rvest::html_text2() -> isa_descs
+
+isa_df = data.frame(
+  title = isa_titles, description = isa_descs
+)
+```
+
+
+
+
+
+
+
+
+
+
+
